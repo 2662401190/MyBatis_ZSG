@@ -1,0 +1,25 @@
+MyBatis 对单个参数不做特殊处理
+
+
+做多个处理时：会把参数封装成Map对象
+    key:param1,param2...
+    value:传入的参数
+
+
+如果参数较多，直接传入pojo （对象）
+
+取值 #{属性名}
+
+如果多个参数不是业务类型，传入一个map  不是经常使用
+
+#{key} 取出map对应的值
+
+
+如果多个参数不是业务类型，但是要经常使用的 可以编写一个TO（Tranfer Object）数据传输对象
+Page{
+Integer index;
+Integer size;
+}
+
+
+
