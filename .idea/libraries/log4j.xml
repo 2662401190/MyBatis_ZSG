@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="log4j">
+    <CLASSES>
+      <root url="jar://K:/学习视频/尚硅谷/尚硅谷Mybatis视频教程/课件&amp;代码/代码/MyBatis_03_mapper/lib/log4j.jar!/" />
+      <root url="jar://K:/学习视频/尚硅谷/尚硅谷Mybatis视频教程/课件&amp;代码/代码/MyBatis_03_mapper/lib/mybatis-3.4.1.jar!/" />
+      <root url="jar://K:/学习视频/尚硅谷/尚硅谷Mybatis视频教程/课件&amp;代码/代码/MyBatis_03_mapper/lib/mysql-connector-java-5.1.37-bin.jar!/" />
+      <root url="jar://K:/学习视频/尚硅谷/尚硅谷Mybatis视频教程/课件&amp;代码/代码/MyBatis_03_mapper/lib/ojdbc6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

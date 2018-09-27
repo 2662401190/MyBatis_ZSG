@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.MyBatis.dao.UserDao">
+
+    <!--查询-->
+    <select id="getUser" resultType="sd">
+        select * from t_user where id = #{id}
+    </select>
+
+    <!--增加  parameterType指定参数类型 可以省略
+    MyBatis支持自增主键 ，自增主键获取  利用statement.getGenreatdKeys()
+        useGeneratedKeys="true"    获取主键自增值策略
+        keyProperty="" 指定我们获取的值交给谁-->
+    <insert id="addUser"  parameterType="sd" useGeneratedKeys="true" keyProperty="">
+        insert into t_user(name,sex,age) value (#{name},#{sex},#{age})
+    </insert>
+<!--删除-->
+    <update id="update" >
+        update  t_user
+         set name=#{name} ,sex=#{sex},age=#{age}
+          where id=#{id}
+    </update>
+    <!--删除-->
+    <delete id="delete">
+        delete from t_user where id=#{id}
+    </delete>
+
+
+</mapper>
