@@ -51,8 +51,6 @@ public interface UserDao {
      * @return
      */
     Map returnMap(Integer id);
-
-
     /**
      *
      * @param name

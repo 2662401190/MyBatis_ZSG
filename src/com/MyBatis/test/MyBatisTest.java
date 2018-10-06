@@ -1,8 +1,11 @@
 package com.MyBatis.test;
 
+import com.MyBatis.Entity.Address;
 import com.MyBatis.Entity.User;
 import com.MyBatis.dao.UserAnnotation;
 import com.MyBatis.dao.UserDao;
+import com.MyBatis.dao.UserPlus;
+import com.MyBatis.dao.address;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -11,6 +14,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author 贺威
@@ -94,9 +99,9 @@ public class MyBatisTest {
 
         try {
             UserDao ud=OpenSession.getMapper(UserDao.class);
-           User user =new User(2,"谈乐","女",20);
+           User user =new User(null,"谈乐","女",20);
            ud.addUser(user);
-            System.out.println("ud:"+ud);
+            System.out.println("ud:"+user.getName());
             OpenSession.commit();
         }finally {
             OpenSession.close();
@@ -138,6 +143,203 @@ public class MyBatisTest {
             OpenSession.close();
         }
 
+    }
+
+    /**
+     * 多条件查询
+     * @throws IOException
+     */
+    @Test
+    public void cx() throws IOException {
+        InputStream inputStream =Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpSessin=sessionFactory.openSession();
+
+        try {
+            UserDao u=OpSessin.getMapper(UserDao.class);
+            User user=u.cxs(4,"12");
+            System.out.println("User:"+user);
+
+        }finally {
+            OpSessin.close();
+        }
+    }
+
+    @Test
+    public void getmap() throws IOException {
+        InputStream inputStream =Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpSessin=sessionFactory.openSession();
+
+        try {
+            UserDao u=OpSessin.getMapper(UserDao.class);
+            Map<String,Object> map=new  HashMap<String,Object>();
+            map.put("id",4);
+            map.put("name",12);
+            User user=u.getmap(map);
+            System.out.println("User:"+user);
+
+        }finally {
+            OpSessin.close();
+        }
+    }
+
+    /**
+     * 返回一个map
+     */
+    @Test
+    public void returnMap() throws IOException {
+        InputStream inputStream=Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpenSession=sessionFactory.openSession();
+
+        try {
+            UserDao ud=OpenSession.getMapper(UserDao.class);
+
+            Map<String,Object>map=ud.returnMap(1);
+            System.out.println("Map:"+map);
+        }finally {
+            OpenSession.close();
+        }
+    }
+
+    /**
+     * 模糊查询
+     * @throws IOException
+     */
+    @Test
+    public void getMapParam() throws IOException {
+        InputStream inputStream=Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpenSession=sessionFactory.openSession();
+
+        try {
+            UserDao ud=OpenSession.getMapper(UserDao.class);
+
+            Map<Integer,User>map=ud.getMapParam("%1%");
+            System.out.println("Map:"+map.keySet());
+        }finally {
+            OpenSession.close();
+        }
+    }
+
+    @Test
+    public  void UserID() throws IOException {
+        InputStream inputStream=Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpenSession=sessionFactory.openSession();
+
+        try {
+            UserPlus ud=OpenSession.getMapper(UserPlus.class);
+
+            User u=ud.UserID(1);
+            System.out.println("Map:"+u.getAddress().getName());
+        }finally {
+            OpenSession.close();
+        }
+    }
+
+    /**
+     * 两表联查
+     * @throws IOException
+     */
+    @Test
+    public  void UserAndAddress() throws IOException {
+        InputStream inputStream=Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpenSession=sessionFactory.openSession();
+
+        try {
+            UserPlus ud=OpenSession.getMapper(UserPlus.class);
+            User u=ud.getUserAndAddress(1);
+            System.out.println("Map:"+u);
+            System.out.println("User:"+u.getAddress());
+        }finally {
+            OpenSession.close();
+        }
+    }
+
+
+    /**
+     * 分布式查询
+     * @throws IOException
+     */
+    @Test
+    public  void fb() throws IOException {
+        InputStream inputStream=Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpenSession=sessionFactory.openSession();
+
+        try {
+            UserPlus ud=OpenSession.getMapper(UserPlus.class);
+            User u=ud.UserID(1);
+            System.out.println("Map:"+u);
+            System.out.println("User:"+u.getAddress());
+        }finally {
+            OpenSession.close();
+        }
+    }
+
+    /**
+     * 查询地址表（address）中 用户表（User）集合的信息
+     * @throws IOException
+     */
+    @Test
+    public void setuser() throws IOException {
+        InputStream inputStream=Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpenSession=sessionFactory.openSession();
+
+        try {
+            address a=OpenSession.getMapper(address.class);
+
+            Address address=a.getAddressIDPlus(1);
+            System.out.println("address:"+address.getUsers());
+        }finally {
+            OpenSession.close();
+        }
+
+    }
+
+    /**
+     * 分布式查询用户表的信息
+     * @throws IOException
+     */
+    @Test
+    public void lists() throws IOException {
+        InputStream inputStream=Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpenSession=sessionFactory.openSession();
+
+        try {
+            address a=OpenSession.getMapper(address.class);
+
+            Address list=a.getAddressID(1);
+            System.out.println("address:"+list.getUsers());
+        }finally {
+            OpenSession.close();
+        }
+    }
+
+    /**
+     * 鉴别器:  出错了
+     * @throws IOException
+     */
+    @Test
+    public void Dis() throws IOException {
+        InputStream inputStream=Resources.getResourceAsStream("MyBatis_config.xml");
+        SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession OpenSession=sessionFactory.openSession();
+
+        try {
+           UserDao ud=OpenSession.getMapper(UserDao.class);
+           User u=ud.getUserID(1);
+
+            System.out.println("address:"+u);
+            System.out.println("User:"+u.getAddress().getName());
+        }finally {
+            OpenSession.close();
+        }
     }
 
 }

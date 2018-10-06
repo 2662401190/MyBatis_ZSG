@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.MyBatis.dao.UserPlus">
+
+    <!--&lt;!&ndash;自定义某个javaBEAN的封装规则-->
+    <!--id :主键有优化-->
+    <!--type 自定义java类型-->
+    <!--id 唯一标识列&ndash;&gt;-->
+    <!--<resultMap id="MyUser" type="sd">-->
+        <!--&lt;!&ndash;指定主键 的封装规则&ndash;&gt;-->
+        <!--<id column="id" property="id"/> &lt;!&ndash; column :数据库的属性； property：实体类中的属性&ndash;&gt;-->
+        <!--<result column="name"  property="name"/>&lt;!&ndash;普通属性&ndash;&gt;-->
+        <!--&lt;!&ndash;其他不封装的咧；会自动封装&ndash;&gt;-->
+    <!--</resultMap>-->
+    <!--&lt;!&ndash;自定义结果集映射规则&ndash;&gt;-->
+    <!--<select id="UserID" resultMap="MyUser">-->
+        <!--select * from t_user where id = #{id}-->
+    <!--</select>-->
+
+    <!--联合查询：使用级联属性封装结果集-->
+    <resultMap id="UserAndAddress" type="sd">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="aid" property="address.id"/>
+        <result column="aname" property="address.Name"/>
+    </resultMap>
+    <!--第二种方法-->
+    <resultMap id="UserAndAddressTwo" type="sd">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <!--association指定联合的javaBean对象
+        property 指定要联合的对象
+        JavaType 指定联合对象的类型【不能省略】
+        -->
+        <association property="address" javaType="com.MyBatis.Entity.Address">
+            <id property="id" column="id"/>
+            <result column="name" property="name"/>
+        </association>
+    </resultMap>
+    <!--查询User 时同时查询 address 对应的地址      -->
+    <select id="getUserAndAddress" resultMap="UserAndAddressTwo">
+        select u.id as id,u.sex,u.name as name,a.id as aid,a.name aname from t_user  u,address a
+        where u.address=a.id
+        and  u.id =#{id}
+    </select>
+
+    <!--使用association  分布式查询
+    1，先查询用户id的信息
+    2， 根据查询用户的信息的Address,再去地址信息
+    3， 设置到地址里面-->
+    <resultMap id="fb" type="com.MyBatis.Entity.User">
+        <id property="id" column="id"/>
+        <result column="name" property="name"/>
+        <!-- Association定义关联对象 封装规则
+            select 表明当前属性是调用select 指明的方法查出的结果-->
+       <association property="address" select="com.MyBatis.dao.address.getAddressID" column="address">
+            <id column="id" property="id"/>
+           <result property="name" column="name"/>
+
+       </association>
+    </resultMap>
+    <select id="UserID" resultMap="dis">
+        select * from t_user where id = #{id}
+    </select>
+
+    <select id="lists" resultType="com.MyBatis.Entity.User">
+        select * from t_user where id=#{id}
+    </select>
+
+
+
+    <!--鉴别器
+         MYBatis可以根据Discriminator 判断某列的值；然后根据值改变封装行为
+         -->
+    <resultMap id="dis" type="com.MyBatis.Entity.User">
+        <id column="id" property="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result column="age" property="age"/>
+
+        <!--column 指定 判断的列名
+        javaType 指定Java类型-->
+        <discriminator javaType="string" column="sex">
+            <!--指定封装级类型-->
+            <case value="男" resultType="com.MyBatis.Entity.User">
+                <association property="address" select="com.MyBatis.dao.address.getAddressID" column="address">
+                    <id column="id" property="id"/>
+                    <result property="name" column="name"/>
+                </association>
+            </case>
+            <!--如果是男 就把name赋值给sex-->
+            <case value="q" resultType="com.MyBatis.Entity.User">
+                <id column="id" property="id"/>
+                <result property="name" column="name"/>
+                <result property="sex" column="sex"/>
+                <result column="name" property="sex"/>
+            </case>
+        </discriminator>
+    </resultMap>
+
+</mapper>

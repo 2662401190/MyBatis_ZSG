@@ -6,6 +6,10 @@
     <!--引入properties文件-->
     <properties resource="qd.properties"/>
 
+    <settings>
+        <setting name="lazyLoadingEnabled" value="true"/>  <!--lazyLoadingEnabled  延迟加载 默认是false 关闭的  全局配置-->
+        <setting name="aggressiveLazyLoading" value="false"/>
+    </settings>
     <!--别名处理器-->
     <typeAliases>
         <!--<typeAlias type="com.MyBatis.Entity.User" alias="sd"/>  &lt;!&ndash;给User 起个别名&ndash;&gt;-->
@@ -26,5 +30,7 @@
     <mappers>
         <mapper resource="userDao.xml"/>
         <mapper class="com.MyBatis.dao.UserAnnotation"/>
+        <mapper resource="UserPlus.xml"/>
+        <mapper resource="Address.xml"/>
     </mappers>
 </configuration>

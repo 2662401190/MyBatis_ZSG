@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.MyBatis.dao.address">
+
+    <!--集合的分布式查询-->
+    <resultMap id="Address" type="com.MyBatis.Entity.Address">
+        <id column="id" property="id"/>
+        <result property="name" column="name"/>
+        <collection property="users" select="com.MyBatis.dao.UserPlus.lists" column="{id=id}" fetchType="eager">
+            <id column="id" property="id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    <!--转多列过去
+    column="{Key1=column1,Key2=column2....}"
+    fetchType="lazy" :表示默认延迟加载  “eager”:表示立即加载
+
+    -->
+
+    <select id="getAddressID" resultMap="Address">
+        select * from address where id = #{id}
+    </select>
+
+
+
+
+
+    <resultMap id="MyAddress" type="com.MyBatis.Entity.Address">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <!--collection 对象关联集合
+            ofType 指定集合元素的类型-->
+        <collection property="users" ofType="com.MyBatis.Entity.User">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result property="sex" column="sex"/>
+            <result column="age" property="age"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAddressIDPlus" resultMap="MyAddress">
+        select * from  address a LEFT JOIN t_user t on a.id=t.address where a.id=#{id}
+    </select>
+</mapper>

@@ -9,27 +9,28 @@ import org.apache.ibatis.type.Alias;
 @Alias("sd")//别名
 public class User {
 
-    private  int id;
+    private  Integer id;
     private String sname;
     private String  sex;
     private Integer age;
+    private Address address;
 
     public User() {
         System.out.println("无参构造");
     }
 
-    public User(int id, String name, String sex, Integer age) {
+    public User(Integer id, String name, String sex, Integer age) {
         this.id = id;
         this.sname = name;
         this.sex = sex;
         this.age = age;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -55,6 +56,22 @@ public class User {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     @Override
